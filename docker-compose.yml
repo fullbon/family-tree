@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  app:
+    container_name: ${COMPOSE_PROJECT_NAME}_next
+    build:
+      context: next
+      dockerfile: docker/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./next:/app
+    networks:
+      - net
+    depends_on:
+      - db
+  db:
+    container_name: ${COMPOSE_PROJECT_NAME}_db
+    image: postgres:12.20-bullseye
+    volumes:
+      - family_tree_pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_DB: "${DB_DATABASE}"
+    networks:
+      - net
+
+networks:
+  net:
+
+volumes:
+  family_tree_pgdata:
